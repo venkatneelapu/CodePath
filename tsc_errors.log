@@ -1,0 +1,11 @@
+Frontend/app/api/auth/signup/route.ts(9,55): error TS2345: Argument of type 'ZodObject<{ email: ZodString; password: ZodString; name: ZodString; }, "strip", ZodTypeAny, { email: string; name: string; password: string; }, { ...; }>' is not assignable to parameter of type '{ safeParse: (data: unknown) => { success: boolean; data: { email: string; name: string; password: string; } | undefined; error: any; }; }'.
+  The types returned by 'safeParse(...)' are incompatible between these types.
+    Type 'SafeParseReturnType<{ email: string; name: string; password: string; }, { email: string; name: string; password: string; }>' is not assignable to type '{ success: boolean; data: { email: string; name: string; password: string; } | undefined; error: any; }'.
+      Type 'SafeParseSuccess<{ email: string; name: string; password: string; }>' is not assignable to type '{ success: boolean; data: { email: string; name: string; password: string; } | undefined; error: any; }'.
+        Property 'error' is optional in type 'SafeParseSuccess<{ email: string; name: string; password: string; }>' but required in type '{ success: boolean; data: { email: string; name: string; password: string; } | undefined; error: any; }'.
+Frontend/app/api/auth/signup/route.ts(17,13): error TS2339: Property 'email' does not exist on type '{ email: string; name: string; password: string; } | undefined'.
+Frontend/app/api/auth/signup/route.ts(17,20): error TS2339: Property 'password' does not exist on type '{ email: string; name: string; password: string; } | undefined'.
+Frontend/app/api/auth/signup/route.ts(17,30): error TS2339: Property 'name' does not exist on type '{ email: string; name: string; password: string; } | undefined'.
+Frontend/components/ui/chart.tsx(62,7): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'CSSProperties'.
+Frontend/lib/auth-utils.ts(1,20): error TS7016: Could not find a declaration file for module 'bcryptjs'. 'D:/chrome/Ai Learning/node_modules/bcryptjs/index.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bcryptjs` if it exists or add a new declaration (.d.ts) file containing `declare module 'bcryptjs';`

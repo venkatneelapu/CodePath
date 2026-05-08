@@ -1,0 +1,30 @@
+
+> my-v0-project@0.1.0 build
+> next build Frontend
+
+   ▲ Next.js 15.5.15
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./app/api/roadmaps/[id]/route.js
+Error:   [31mx[0m Expected ',', got 'as'
+    ,-[[36;1;4md:\chrome\Ai Learning\Frontend\app\api\roadmaps\[id]\route.js[0m:56:1]
+ [2m53[0m |         docs.reduce((map, doc) => {
+ [2m54[0m |           map[doc.module_id.toString()] = doc;
+ [2m55[0m |           return map;
+ [2m56[0m |         }, {} as any)
+    : [35;1m              ^^[0m
+ [2m57[0m |       );
+ [2m58[0m | 
+ [2m59[0m |     const modulesWithProgress = modules.map(module => ({
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/api/roadmaps/[id]/route.js
+
+
+> Build failed because of webpack errors

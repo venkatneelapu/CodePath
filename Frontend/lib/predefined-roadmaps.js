@@ -1,0 +1,58 @@
+export const predefinedRoadmaps = [
+  {
+    id: "react-basics",
+    title: "React Fundamentals",
+    description: "Learn the basics of React and build interactive UIs",
+    duration: "4 weeks",
+    level: "Beginner",
+    steps: [
+      { id: 1, title: "JSX & Components", description: "Understand JSX syntax and component structure" },
+      { id: 2, title: "Props & State", description: "Learn how to pass data and manage component state" },
+      { id: 3, title: "Hooks", description: "Master useState, useEffect, and custom hooks" },
+      { id: 4, title: "Routing", description: "Build multi-page apps with React Router" },
+      { id: 5, title: "Project", description: "Build a complete React application" },
+    ],
+  },
+  {
+    id: "nextjs-fullstack",
+    title: "Next.js Full Stack",
+    description: "Build full-stack applications with Next.js",
+    duration: "6 weeks",
+    level: "Intermediate",
+    steps: [
+      { id: 1, title: "App Router", description: "Learn Next.js 13+ App Router" },
+      { id: 2, title: "Server Components", description: "Understand React Server Components" },
+      { id: 3, title: "API Routes", description: "Build backend APIs with Next.js" },
+      { id: 4, title: "Database", description: "Integrate databases with your app" },
+      { id: 5, title: "Deployment", description: "Deploy to Vercel" },
+      { id: 6, title: "Project", description: "Build a full-stack application" },
+    ],
+  },
+  {
+    id: "typescript-pro",
+    title: "TypeScript Mastery",
+    description: "Master TypeScript for type-safe development",
+    duration: "3 weeks",
+    level: "Intermediate",
+    steps: [
+      { id: 1, title: "Basics", description: "Types, interfaces, and generics" },
+      { id: 2, title: "Advanced Types", description: "Union types, intersection types, and more" },
+      { id: 3, title: "Decorators", description: "Use decorators in TypeScript" },
+      { id: 4, title: "Project", description: "Build a TypeScript project" },
+    ],
+  },
+  {
+    id: "web-design",
+    title: "Web Design Essentials",
+    description: "Learn modern web design principles and tools",
+    duration: "5 weeks",
+    level: "Beginner",
+    steps: [
+      { id: 1, title: "Design Principles", description: "Color, typography, and layout" },
+      { id: 2, title: "Figma", description: "Design tools and prototyping" },
+      { id: 3, title: "Responsive Design", description: "Mobile-first design approach" },
+      { id: 4, title: "Accessibility", description: "Build accessible websites" },
+      { id: 5, title: "Portfolio", description: "Create your design portfolio" },
+    ],
+  },
+]

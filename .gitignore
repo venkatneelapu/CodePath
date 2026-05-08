@@ -1,0 +1,53 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# IDE/editor
+.vscode/
+.idea/
+
+# caches
+.cache/
+
+# next.js
+/.next/
+/out/
+
+# local Next caches
+Frontend/.next/
+Backend/.next/
+
+
+# production
+/build
+
+# build outputs in subfolders
+Frontend/build/
+Backend/build/
+
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env*
+
+# also ignore env files inside apps
+Frontend/.env*
+Backend/.env*
+
+# local .next caches (including alternate folder name)
+Backend/.next_backend/
+
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
