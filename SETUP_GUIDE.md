@@ -1,287 +1,222 @@
-# CodePath - Complete Setup Guide
+# 🛠️ CodePath — Complete Setup & Deployment Guide
 
-## Platform Overview
-CodePath is a modern, AI-powered learning platform where users can create personalized learning roadmaps, complete interactive lessons, quizzes, and track their progress.
-
-## New Features & Design
-
-### Website Rebranding
-- **Old Name**: Learning Platform / CodeMentor Academy
-- **New Name**: CodePath
-- **New Tagline**: "Master Code The Right Way"
-
-### Modern Design System
-- **Color Palette**: 
-  - Primary: Purple (#a855f7)
-  - Secondary: Pink (#ec4899)
-  - Accent: Cyan (#06b6d4)
-  - Background: Slate-900 to Purple-900 gradient
-  
-- **Animations**:
-  - Blob animations for background
-  - Float animations for UI elements
-  - Glow effects for buttons
-  - Smooth slide-in and fade-in transitions
-
-### Key Pages & Features
-
-#### 1. **Home Page** (`/app/page.jsx`)
-- Modern hero section with gradient text
-- Animated background with blob animations
-- 6 feature cards with hover effects
-- Call-to-action sections
-- Footer with links
-- Responsive design for all devices
-
-#### 2. **Authentication** 
-- **Signup** (`/app/signup/page.jsx`): Email/password registration + Google Sign-Up
-- **Login** (`/app/login/page.jsx`): Email/password login + Google Sign-In
-- Password strength validation
-- User data stored in Neon database
-
-#### 3. **Dashboard** (`/app/dashboard/page.jsx`)
-- Welcome message with user name
-- Learning streak tracker
-- Statistics cards (problems solved, quizzes passed, courses completed)
-- Active roadmaps list with progress bars
-- Create new roadmap button
-- Animated gradient background
-
-#### 4. **Generate Roadmap** (`/app/generate/page.jsx`)
-- Form to create AI-powered learning paths
-- Topic, duration, and skill level selection
-- Integration with Gemini API
-- Automatic navigation to created roadmap
-
-#### 5. **Roadmap Study** (`/app/roadmap/[id]/page.jsx`)
-- Day-by-day structured learning
-- Learn & Assignment tabs
-- Interactive quizzes with scoring
-- Progress tracking
-- Next day navigation
-
-## Technical Stack
-
-### Frontend
-- **Framework**: Next.js 14+ (App Router)
-- **Styling**: Tailwind CSS v4
-- **UI Components**: shadcn/ui
-- **Icons**: Lucide Icons
-- **State Management**: React hooks
-
-### Backend & Database
-- **Database**: Neon (PostgreSQL)
-- **Authentication**: Firebase
-- **ORM/Database Access**: Custom SQL functions in `/lib/db.js`
-
-### API Integration
-- **AI**: Google Gemini API
-- **Authentication**: Firebase Authentication
-
-## Installation & Setup
-
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd codepath
-```
-
-### 2. Install Dependencies
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-```
-
-### 3. Firebase Setup
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Create a new project
-3. Enable Google Authentication in Authentication settings
-4. Get your Firebase config from Project Settings
-5. Create `.env.local` file:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
-```
-
-### 4. Neon Database Setup
-1. Go to [Neon Console](https://console.neon.tech/)
-2. Create a new project
-3. Copy your connection string
-4. Add to `.env.local`:
-
-```env
-DATABASE_URL=your_neon_connection_string
-PGHOST=your_neon_host
-PGUSER=your_neon_user
-PGPASSWORD=your_neon_password
-PGDATABASE=your_neon_database
-```
-
-### 5. Gemini API Setup (Optional)
-1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Create an API key
-3. Add to `.env.local`:
-
-```env
-NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
-```
-
-### 6. Run the Development Server
-```bash
-npm run dev
-# Server runs on http://localhost:3000
-```
-
-## Database Schema
-
-### Users Table
-```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  password_hash VARCHAR(255),
-  avatar_url TEXT,
-  phone VARCHAR(20),
-  provider VARCHAR(50) DEFAULT 'email',
-  provider_id VARCHAR(255),
-  is_verified BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  last_login_at TIMESTAMP
-);
-```
-
-## Authentication Flow
-
-### Google Sign-In/Sign-Up
-1. User clicks "Sign in/up with Google"
-2. Firebase authenticates user
-3. API route saves/retrieves user from Neon
-4. User data stored in localStorage
-5. Redirect to dashboard
-
-### Email Authentication
-1. User submits email/password (signup) or email/password (login)
-2. Firebase creates/authenticates user
-3. API route saves user to Neon (signup) or verifies user (login)
-4. User data stored in localStorage
-5. Redirect to dashboard
-
-## File Structure
-
-```
-codepath/
-├── app/
-│   ├── page.jsx                 # Home page
-│   ├── login/page.jsx           # Login page
-│   ├── signup/page.jsx          # Sign up page
-│   ├── dashboard/page.jsx       # Dashboard
-│   ├── generate/page.jsx        # Generate roadmap
-│   ├── roadmap/[id]/page.jsx   # Study roadmap
-│   ├── api/
-│   │   └── auth/
-│   │       ├── signup/route.js
-│   │       ├── signin/route.js
-│   │       └── google-signin/route.js
-│   ├── layout.tsx
-│   └── globals.css
-├── components/
-│   ├── header.jsx
-│   ├── ui/                      # shadcn/ui components
-│   └── learning/
-│       └── content-viewer.jsx
-├── lib/
-│   ├── firebase.js              # Firebase config
-│   ├── firebase-auth.js         # Auth functions
-│   ├── db.js                    # Database functions
-│   └── mock-learning-content.js
-└── public/
-    └── icon.svg
-```
-
-## Key Features
-
-### 1. AI-Powered Learning Paths
-- Generate custom roadmaps using Gemini API
-- Personalized based on topic and skill level
-- Day-wise breakdown with lessons and assignments
-
-### 2. User Authentication
-- Email/password registration and login
-- Google OAuth integration
-- Secure password hashing
-- Session management with localStorage
-
-### 3. Progress Tracking
-- Daily streak counter
-- Problem solving statistics
-- Quiz performance tracking
-- Course completion metrics
-
-### 4. Interactive Learning
-- Lesson content with code examples
-- Interactive quizzes with instant feedback
-- Assignments for hands-on practice
-- Copy-to-clipboard code examples
-
-### 5. Modern UI/UX
-- Responsive design
-- Dark theme optimized
-- Animated backgrounds
-- Smooth transitions
-- Accessibility features
-
-## Deployment
-
-### Deploy to Vercel
-1. Push code to GitHub
-2. Connect repository to Vercel
-3. Add environment variables in Vercel Settings
-4. Deploy
-
-```bash
-vercel
-```
-
-## Troubleshooting
-
-### Firebase Authentication Issues
-- Ensure Firebase config is correct
-- Check authorized redirect URLs in Firebase Console
-- Verify API keys have proper permissions
-
-### Database Connection Issues
-- Check Neon connection string is correct
-- Verify network access from Vercel IP
-- Ensure database tables are created
-
-### API Errors
-- Check console for detailed error messages
-- Verify all environment variables are set
-- Check API rate limits (Gemini has daily limits)
-
-## Future Enhancements
-- Real-time collaboration features
-- Code execution environment
-- Advanced analytics dashboard
-- Mobile app
-- Community features
-- Certificate system
-- Payment integration
-
-## Support
-For issues or questions, please contact support@codepath.dev
+This guide provides comprehensive, step-by-step instructions to clone, configure, run, test, and deploy the **CodePath** AI-Powered Learning Platform on any operating system (**Windows, macOS, Linux**).
 
 ---
 
-**CodePath - Master Code The Right Way**
+## 📋 Table of Contents
+
+1. [Prerequisites](#1-prerequisites)
+2. [Step-by-Step Installation](#2-step-by-step-installation)
+3. [Environment Configuration (Single `.env`)](#3-environment-configuration-single-env)
+4. [Database Setup (MongoDB Local & Cloud Atlas)](#4-database-setup-mongodb-local--cloud-atlas)
+5. [Running the Application](#5-running-the-application)
+6. [Available NPM Commands](#6-available-npm-commands)
+7. [Testing & Verification](#7-testing--verification)
+8. [Production Build & Deployment](#8-production-build--deployment)
+9. [Troubleshooting & FAQs](#9-troubleshooting--faqs)
+
+---
+
+## 1. Prerequisites
+
+Before installing, ensure your machine has the following tools installed:
+
+| Tool | Minimum Version | Recommended | Download Link |
+| :--- | :--- | :--- | :--- |
+| **Node.js** | `v18.0.0` | `v20.x` or `v22.x` | [nodejs.org](https://nodejs.org/) |
+| **npm** | `v9.0.0` | `v10.x`+ (included with Node) | Included with Node.js |
+| **Git** | `v2.30.0`+ | Latest | [git-scm.com](https://git-scm.com/) |
+| **MongoDB** | `v6.0`+ | Local Community or Atlas Cloud | [mongodb.com](https://www.mongodb.com/) |
+
+Check your versions:
+```bash
+node -v
+npm -v
+git --version
+```
+
+---
+
+## 2. Step-by-Step Installation
+
+### Step 2.1: Clone the Repository
+```bash
+git clone https://github.com/venkatneelapu/CodePath.git
+cd CodePath
+```
+
+### Step 2.2: Install Dependencies
+Run the install command from the root folder:
+```bash
+npm install
+```
+This installs all required dependencies for both Frontend (Next.js 15, React 19, Tailwind CSS v4, Lucide, Radix UI) and Backend (MongoDB client, Google Generative AI, bcryptjs, Zod).
+
+---
+
+## 3. Environment Configuration (Single `.env`)
+
+CodePath uses an automated **Single `.env` Architecture**. You only maintain **one `.env` file in the root directory**. Subfolders (`Frontend/.env.local` and `Backend/.env.local`) are synchronized automatically.
+
+### Step 3.1: Copy `.env.example`
+The repository includes a pre-configured `.env.example` with working defaults:
+
+- **macOS / Linux:**
+  ```bash
+  cp .env.example .env
+  ```
+- **Windows (PowerShell / Command Prompt):**
+  ```powershell
+  copy .env.example .env
+  ```
+*(Note: If you run `npm run dev` directly, CodePath automatically creates `.env` from `.env.example` if it doesn't already exist!)*
+
+### Step 3.2: Configure Environment Keys
+Open `.env` in your editor:
+```env
+# MongoDB Connection (Local or Atlas)
+MONGODB_URI=mongodb://localhost:27017/codepath
+
+# Google Gemini AI Key (for AI Roadmaps, AI Mentor, Challenges, Quizzes)
+GEMINI_API_KEY=AIzaSyAeq7ppqjGI5h7Hvx_eJCfPGKHFczVCmvc
+NEXT_PUBLIC_GEMINI_API_KEY=AIzaSyAeq7ppqjGI5h7Hvx_eJCfPGKHFczVCmvc
+
+# Application URLs & Ports
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+PORT=3000
+BACKEND_PORT=5000
+
+# Auth & Rate Limiting
+SESSION_SECRET=codepath_super_secure_session_secret_key_2026_xyz987654321
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW_MS=900000
+
+# Environment
+NODE_ENV=development
+```
+
+---
+
+## 4. Database Setup (MongoDB Local & Cloud Atlas)
+
+CodePath uses **MongoDB** for user accounts, session state, learning roadmaps, daily modules, quizzes, and gamification points.
+
+### Option A: Local MongoDB (Fastest for Offline Development)
+1. Install and start [MongoDB Community Server](https://www.mongodb.com/try/download/community) or launch via **MongoDB Compass**.
+2. Start the MongoDB daemon:
+   ```bash
+   mongod
+   ```
+3. Your local connection URI is `mongodb://localhost:27017/codepath` (already pre-configured in `.env`).
+
+### Option B: MongoDB Atlas (Cloud - Free)
+1. Sign up at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas) and create a free Shared Cluster.
+2. Under **Database Access**, create a user with Read/Write privileges.
+3. Under **Network Access**, add `0.0.0.0/0` (Allow Access from Anywhere) or your current IP.
+4. Click **Connect** → **Drivers** → Copy the connection string.
+5. In your root `.env`, update `MONGODB_URI`:
+   ```env
+   MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/codepath?retryWrites=true&w=majority
+   ```
+
+### Step 4.1: Seed Database & Create Indexes
+Run the built-in database initializer to create required collections, compound indexes, and seed sample courses:
+```bash
+npm run db:init
+```
+
+---
+
+## 5. Running the Application
+
+### Start Development Server (Single Command):
+```bash
+npm run dev
+```
+
+What happens automatically:
+1. `scripts/sync-env.js` validates and syncs root `.env` to `Frontend/.env.local` and `Backend/.env.local`.
+2. Starts **Backend API Server** on `http://localhost:5000`.
+3. Starts **Frontend Web App** on `http://localhost:3000`.
+4. Merges output streams with clear prefixes: `[Frontend]` (Cyan) and `[Backend]` (Magenta).
+5. Clean shutdown on `Ctrl + C`.
+
+Open your browser to:
+- 🌐 **Frontend UI**: [http://localhost:3000](http://localhost:3000)
+- ⚙️ **Backend Health/API**: [http://localhost:5000](http://localhost:5000)
+
+---
+
+## 6. Available NPM Commands
+
+| Command | Action |
+| :--- | :--- |
+| `npm run dev` | **Runs both Frontend (port 3000) and Backend (port 5000) concurrently** |
+| `npm run build` | Builds production bundles for Backend and Frontend |
+| `npm start` | Starts both production servers concurrently |
+| `npm run db:init` | Connects to MongoDB, creates indexes, and seeds courses |
+| `npm run env:sync` | Syncs root `.env` to Frontend and Backend subfolders |
+| `npm run dev:frontend` | Runs only the Frontend UI |
+| `npm run dev:backend` | Runs only the Backend API |
+| `npm run lint` | Runs ESLint across the project |
+
+---
+
+## 7. Testing & Verification
+
+1. **Verify Backend Health**:
+   Open browser or run:
+   ```bash
+   curl http://localhost:5000/api/courses
+   ```
+   Should return JSON list of available courses.
+
+2. **Verify Frontend UI**:
+   Navigate to `http://localhost:3000`. You should see the hero page with animated gradients.
+
+3. **Verify AI Roadmap Generation**:
+   Navigate to `http://localhost:3000/generate`, enter a topic (e.g., "Python for Beginners", 7 days), and click **Generate Roadmap**. The Gemini AI API will generate a day-by-day curriculum.
+
+4. **Verify Interactive Code Playground**:
+   Navigate to `http://localhost:3000/playground`, write JavaScript or Python code, and click **Run Code**.
+
+---
+
+## 8. Production Build & Deployment
+
+### Build for Production:
+```bash
+npm run build
+```
+
+### Run Production Server:
+```bash
+npm start
+```
+
+### Vercel / Cloud Deployment:
+- **Frontend**: Deploy `Frontend/` directly to Vercel. Set `NEXT_PUBLIC_APP_URL` and backend proxy.
+- **Backend**: Deploy `Backend/` as a Node/Next.js service on Vercel, Railway, Render, or AWS.
+
+---
+
+## 9. Troubleshooting & FAQs
+
+### Q1: `GEMINI_API_KEY not configured`
+**Fix**: Ensure `GEMINI_API_KEY=AIzaSyAeq7ppqjGI5h7Hvx_eJCfPGKHFczVCmvc` is present in root `.env`. Run `npm run env:sync` and restart `npm run dev`.
+
+### Q2: Port 3000 or 5000 is already in use
+**Fix**:
+- **Windows**:
+  ```powershell
+  Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess | Stop-Process -Force
+  Get-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess | Stop-Process -Force
+  ```
+- **macOS / Linux**:
+  ```bash
+  lsof -ti:3000,5000 | xargs kill -9
+  ```
+
+### Q3: `MongoServerSelectionError: connect ECONNREFUSED`
+**Fix**: Ensure your local MongoDB server is running (`mongod` or MongoDB Compass), or check that your IP is whitelisted in MongoDB Atlas under Network Access (`0.0.0.0/0`).
