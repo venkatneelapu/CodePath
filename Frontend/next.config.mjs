@@ -18,10 +18,11 @@ const nextConfig = {
     path.dirname(fileURLToPath(import.meta.url)),
   ),
   async rewrites() {
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*', // Proxy to Backend Next.js API server
+        destination: `${backendUrl}/api/:path*`, // Proxy to Backend API server
       },
     ]
   },
