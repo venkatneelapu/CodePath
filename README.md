@@ -229,14 +229,15 @@ CodePath is fully optimized for **zero-configuration full-stack deployment on Ve
    - **Root Directory**: Click `Edit` and select `Frontend` (or `./Frontend`).
 
 4. **Set Environment Variables**:
-   Under **Environment Variables**, add the following 4 essential keys for **Production and Preview**:
+   Under **Environment Variables**, add the following 3 essential keys for **Production and Preview** (keep them private without any public prefix):
    
    | Variable Name | Description / Recommended Value |
    | :--- | :--- |
    | `MONGODB_URI` | Your MongoDB Atlas connection URI string (`mongodb+srv://...`) |
    | `GEMINI_API_KEY` | Your Google Gemini API Key from [Google AI Studio](https://aistudio.google.com/app/apikey) |
-   | `NEXT_PUBLIC_GEMINI_API_KEY` | Same Google Gemini API Key (for client-side fallbacks) |
    | `SESSION_SECRET` | A secure random 32+ character string (e.g. `codepath_super_secure_session_secret_key_2026`) |
+
+> 🔒 **Security Note**: Never add `NEXT_PUBLIC_` prefix to `GEMINI_API_KEY`. All AI calls are executed securely on the server via Next.js API routes (`/api/gemini/*`). Removing the public prefix keeps your API key completely hidden and protected from the browser.
 
 5. **Click "Deploy"**:
    - Vercel automatically builds and deploys your full-stack application in under 60 seconds!
@@ -261,10 +262,8 @@ MONGODB_URI=mongodb+srv://venkatnaidu:Venkat2005Pass@cluster0.bpjgtmw.mongodb.ne
 # Local fallback (if working offline):
 # MONGODB_URI=mongodb://localhost:27017/codepath
 
-# 2. Google Gemini AI API Configuration
-# Pre-configured with working key for instant roadmaps and mentor chat:
-GEMINI_API_KEY=AIzaSyAeq7ppqjGI5h7Hvx_eJCfPGKHFczVCmvc
-NEXT_PUBLIC_GEMINI_API_KEY=AIzaSyAeq7ppqjGI5h7Hvx_eJCfPGKHFczVCmvc
+# 2. Google Gemini AI API Configuration (Kept strictly private on server)
+GEMINI_API_KEY=your_gemini_api_key_here
 
 # 3. Application URLs & Ports
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -383,7 +382,7 @@ All API requests made to `http://localhost:3000/api/*` are automatically proxied
 **Cause:** Google automatically revokes Gemini API keys if detected on public repositories, returning `403 Forbidden: Your API key was reported as leaked`.
 **Solution:**
 1. Generate a free key from [Google AI Studio](https://aistudio.google.com/app/apikey).
-2. Update `GEMINI_API_KEY` and `NEXT_PUBLIC_GEMINI_API_KEY` in your root `.env` (and in Vercel **Project Settings → Environment Variables** if deployed).
+2. Update `GEMINI_API_KEY` in your root `.env` (and in Vercel **Project Settings → Environment Variables** if deployed). Do not prefix it with `NEXT_PUBLIC_` to keep it safe from browser exposure.
 3. The platform also includes built-in intelligent fallback generators: even if Google's AI service is temporarily unavailable or rate limited, high-quality structured curricula, quizzes, and exercises will still be generated seamlessly!
 
 ---
