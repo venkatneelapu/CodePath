@@ -18,13 +18,16 @@ const nextConfig = {
     path.dirname(fileURLToPath(import.meta.url)),
   ),
   async rewrites() {
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${backendUrl}/api/:path*`, // Proxy to Backend API server
-      },
-    ]
+    // If an external backend is explicitly provided, rewrite to it; otherwise serve native API routes
+    if (process.env.BACKEND_URL) {
+      return [
+        {
+          source: '/api/:path*',
+          destination: `${process.env.BACKEND_URL}/api/:path*`,
+        },
+      ];
+    }
+    return [];
   },
 };
 
