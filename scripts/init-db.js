@@ -1,5 +1,10 @@
 const { MongoClient } = require('mongodb');
+const dns = require('dns');
 const { syncEnv } = require('./sync-env');
+
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {}
 
 const env = syncEnv();
 const uri = env.MONGODB_URI || 'mongodb://localhost:27017/codepath';
@@ -48,13 +53,13 @@ const SAMPLE_COURSES = [
 ];
 
 async function initializeDatabase() {
-  console.log('🚀 Connecting to MongoDB at:', uri.replace(/:([^:@]+)@/, ':****@'));
+  console.log('🚀 Connecting to MongoDB Atlas at:', uri.replace(/:([^:@]+)@/, ':****@'));
   const client = new MongoClient(uri);
 
   try {
     await client.connect();
     const db = client.db('codepath');
-    console.log('✅ Connected successfully to MongoDB.\n');
+    console.log('✅ Connected successfully to MongoDB Atlas!\n');
 
     const collections = [
       'users',
@@ -92,15 +97,14 @@ async function initializeDatabase() {
     const count = await db.collection('courses').countDocuments();
     if (count === 0) {
       await db.collection('courses').insertMany(SAMPLE_COURSES);
-      console.log(`\n🎉 Seeded ${SAMPLE_COURSES.length} sample courses into the database!`);
+      console.log(`\n🎉 Seeded ${SAMPLE_COURSES.length} sample courses into MongoDB Atlas!`);
     } else {
-      console.log(`\nℹ️  Courses collection already contains ${count} courses.`);
+      console.log(`\nℹ️  Courses collection already contains ${count} courses in MongoDB Atlas.`);
     }
 
     console.log('\n✅ Database initialization complete!\n');
   } catch (error) {
     console.error('\n❌ MongoDB initialization failed:', error.message);
-    console.error('👉 Make sure MongoDB is running locally (e.g. via MongoDB Compass / mongod) or check your Atlas MONGODB_URI in .env.\n');
   } finally {
     await client.close();
   }

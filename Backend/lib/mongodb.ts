@@ -1,4 +1,12 @@
 import { Db, MongoClient } from 'mongodb';
+import dns from 'dns';
+
+// Ensure DNS SRV records resolve reliably on all networks (including restrictive local routers)
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  // Ignore in environments where custom DNS servers cannot be set
+}
 
 let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
