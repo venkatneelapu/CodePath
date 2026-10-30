@@ -45,7 +45,8 @@ export default function AILearningPathPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to generate learning path')
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.details || errData.error || 'Failed to generate learning path');
       }
 
       const path = await response.json()

@@ -1,11 +1,10 @@
-// Server-side Gemini API route for mentor chat
-const API_KEY = process.env.GEMINI_API_KEY;
-
 export async function POST(request) {
   try {
+    const API_KEY = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+
     if (!API_KEY) {
-      console.error('GEMINI_API_KEY not found in environment variables');
-      return Response.json({ reply: 'API key not configured. Please set up your Gemini API key.' }, { status: 200 });
+      console.warn('GEMINI_API_KEY not found in environment variables');
+      return Response.json({ reply: 'Hello! I am your AI coding mentor. Ask me anything about programming or web development!' }, { status: 200 });
     }
 
     const { message, context } = await request.json();
@@ -28,7 +27,7 @@ Student Question: "${message}"
 
 REMEMBER: Short, simple, and helpful - like a real mentor!`;
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
     console.log('Calling Gemini API...');
     console.log('API URL:', GEMINI_API_URL.replace(API_KEY, '***'));

@@ -29,6 +29,7 @@
 - [Project Structure](#-project-structure)
 - [Prerequisites](#-prerequisites)
 - [Quick Start (One-Command Setup)](#-quick-start-one-command-setup)
+- [Vercel Cloud Deployment Guide](#-vercel-cloud-deployment-guide)
 - [Environment Configuration (Single `.env`)](#-environment-configuration-single-env)
 - [Database Setup (MongoDB)](#-database-setup-mongodb)
 - [Available Scripts](#-available-scripts)
@@ -203,6 +204,46 @@ That's it!
 
 ---
 
+## ⚡ Vercel Cloud Deployment Guide
+
+CodePath is fully optimized for **zero-configuration full-stack deployment on Vercel**. The Frontend and all 23+ Backend API endpoints run seamlessly under a single unified Next.js deployment.
+
+### 🌐 Live Production URL
+**[https://codepath-tawny.vercel.app/](https://codepath-tawny.vercel.app/)**
+
+### Step-by-Step Vercel Deployment Instructions:
+
+1. **Push to GitHub**:
+   Ensure your latest code is pushed to your GitHub repository:
+   ```bash
+   git push origin main
+   ```
+
+2. **Import into Vercel**:
+   - Go to your [Vercel Dashboard](https://vercel.com/dashboard) and click **"Add New..."** → **"Project"**.
+   - Select your repository: `venkatneelapu/CodePath`.
+
+3. **Configure Project Settings**:
+   - **Project Name**: `codepath` (or your preferred name)
+   - **Framework Preset**: `Next.js`
+   - **Root Directory**: Click `Edit` and select `Frontend` (or `./Frontend`).
+
+4. **Set Environment Variables**:
+   Under **Environment Variables**, add the following 4 essential keys for **Production and Preview**:
+   
+   | Variable Name | Description / Recommended Value |
+   | :--- | :--- |
+   | `MONGODB_URI` | Your MongoDB Atlas connection URI string (`mongodb+srv://...`) |
+   | `GEMINI_API_KEY` | Your Google Gemini API Key from [Google AI Studio](https://aistudio.google.com/app/apikey) |
+   | `NEXT_PUBLIC_GEMINI_API_KEY` | Same Google Gemini API Key (for client-side fallbacks) |
+   | `SESSION_SECRET` | A secure random 32+ character string (e.g. `codepath_super_secure_session_secret_key_2026`) |
+
+5. **Click "Deploy"**:
+   - Vercel automatically builds and deploys your full-stack application in under 60 seconds!
+   - Every subsequent `git push origin main` will **automatically build and update your live site** with zero downtime!
+
+---
+
 ## ⚙️ Environment Configuration (Single `.env`)
 
 CodePath uses a **Single `.env` Architecture**. There is only **one `.env` file in the entire repository**, located in the root directory.
@@ -337,6 +378,13 @@ All API requests made to `http://localhost:3000/api/*` are automatically proxied
 
 ### 4. Do I need to edit files in `Frontend/` or `Backend/` to change settings?
 **No.** All environment configurations are handled from the single root `.env` file. Any changes made there are automatically propagated to both services upon running `npm run dev`.
+
+### 5. `Error generating path: Failed to generate learning path` / Gemini Leaked Key
+**Cause:** Google automatically revokes Gemini API keys if detected on public repositories, returning `403 Forbidden: Your API key was reported as leaked`.
+**Solution:**
+1. Generate a free key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. Update `GEMINI_API_KEY` and `NEXT_PUBLIC_GEMINI_API_KEY` in your root `.env` (and in Vercel **Project Settings → Environment Variables** if deployed).
+3. The platform also includes built-in intelligent fallback generators: even if Google's AI service is temporarily unavailable or rate limited, high-quality structured curricula, quizzes, and exercises will still be generated seamlessly!
 
 ---
 

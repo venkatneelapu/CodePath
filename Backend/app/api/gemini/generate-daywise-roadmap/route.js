@@ -1,24 +1,27 @@
-const API_KEY = process.env.GEMINI_API_KEY
-
 export async function POST(request) {
   try {
-    if (!API_KEY) {
-      console.error('GEMINI_API_KEY not found')
-      return Response.json({ error: 'API key not configured' }, { status: 500 })
-    }
+    const API_KEY = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY
 
-    const { topic, duration, level } = await request.json()
+    const { topic, duration = '7 days', level = 'Beginner' } = await request.json()
 
     // Parse duration to get number of days
     let totalDays = 30
-    if (duration.includes('week')) {
+    if (typeof duration === 'string' && duration.includes('week')) {
       const weeks = parseInt(duration)
       totalDays = weeks * 7
-    } else if (duration.includes('month')) {
+    } else if (typeof duration === 'string' && duration.includes('month')) {
       const months = parseInt(duration)
       totalDays = months * 30
-    } else if (duration.includes('day')) {
+    } else if (typeof duration === 'string' && duration.includes('day')) {
       totalDays = parseInt(duration)
+    } else if (typeof duration === 'number') {
+      totalDays = duration
+    }
+
+    if (!API_KEY) {
+      console.warn('GEMINI_API_KEY not found. Serving fallback roadmap.')
+      const fallbackRoadmap = generateFallbackRoadmap(topic, totalDays, level)
+      return Response.json(fallbackRoadmap)
     }
 
     // For API requests, reduce to max 5 days to avoid token limits and ensure valid JSON
@@ -42,7 +45,7 @@ Example structure (MODIFY THIS FOR THE ACTUAL CONTENT):
 
 Generate valid JSON for ${daysToGenerate} days of ${topic} at ${level} level.`
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`
 
     console.log('Calling Gemini API for day-wise roadmap generation...')
     const response = await fetch(GEMINI_API_URL, {

@@ -1,14 +1,39 @@
-// Server-side Gemini API route for resource recommendations
-const API_KEY = process.env.GEMINI_API_KEY;
+function getFallbackResources(topic = 'Software Engineering', level = 'Beginner') {
+  return [
+    {
+      title: `${topic} Official Documentation & Guides`,
+      type: 'website',
+      url: 'https://developer.mozilla.org/',
+      description: `Comprehensive tutorials, reference manuals, and interactive examples for ${topic}.`,
+      difficulty: level.toLowerCase()
+    },
+    {
+      title: `FreeCodeCamp - ${topic} Curriculum`,
+      type: 'course',
+      url: 'https://www.freecodecamp.org/',
+      description: `Structured interactive challenges and milestone projects covering ${topic}.`,
+      difficulty: level.toLowerCase()
+    },
+    {
+      title: `${topic} Open Source Projects & Architectures`,
+      type: 'tutorial',
+      url: 'https://github.com/',
+      description: `Explore real-world repositories, design patterns, and codebases in ${topic}.`,
+      difficulty: level.toLowerCase()
+    }
+  ];
+}
 
 export async function POST(request) {
   try {
-    if (!API_KEY) {
-      console.error('GEMINI_API_KEY not found');
-      return Response.json({ error: 'API key not configured' }, { status: 500 });
-    }
+    const API_KEY = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    const body = await request.json().catch(() => ({}));
+    const { topic = 'Programming', level = 'Beginner' } = body;
 
-    const { topic, level } = await request.json();
+    if (!API_KEY) {
+      console.warn('GEMINI_API_KEY not found. Serving fallback resources.');
+      return Response.json(getFallbackResources(topic, level), { status: 200 });
+    }
 
     const prompt = `Recommend 10 best learning resources (books, courses, websites, tutorials) for learning "${topic}" at ${level} level.
     
@@ -23,7 +48,7 @@ Return a JSON array like this:
   }
 ]`;
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
     const response = await fetch(GEMINI_API_URL, {
       method: "POST",

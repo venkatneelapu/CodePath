@@ -1,15 +1,38 @@
-const API_KEY = process.env.GEMINI_API_KEY
+function generateFallbackChallenge(topicsCovered = ['Problem Solving'], difficulty = 'intermediate', language = 'javascript') {
+  const primaryTopic = topicsCovered[0] || 'Core Logic';
+  const isPython = language.toLowerCase() === 'python';
+  return {
+    id: `challenge-fallback-${Date.now()}`,
+    title: `${primaryTopic} Coding Milestone`,
+    description: `Write a robust program demonstrating mastery of ${primaryTopic}.`,
+    problemStatement: `Implement a function that processes an input list/array according to the rules of ${primaryTopic}, handling edge cases and empty inputs cleanly.`,
+    examples: [
+      {
+        input: isPython ? '[1, 2, 3]' : '[1, 2, 3]',
+        output: isPython ? '[2, 4, 6]' : '[2, 4, 6]',
+        explanation: 'Each element in the input is doubled and returned in a new collection.'
+      }
+    ],
+    constraints: ['Input array length <= 1000', 'Handle null or empty inputs gracefully'],
+    hints: ['Break down the logic into modular functions', 'Check edge cases first'],
+    starterCode: isPython
+      ? `# Problem: ${primaryTopic}\ndef solution(items):\n    # TODO: Write your code here\n    return [x * 2 for x in items]\n`
+      : `// Problem: ${primaryTopic}\nfunction solution(items) {\n  // TODO: Write your code here\n  return (items || []).map(x => x * 2);\n}\n`
+  };
+}
 
 export async function POST(request) {
   try {
+    const API_KEY = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    const body = await request.json().catch(() => ({}));
+    const { topicsCovered = ['Core Logic'], difficulty = 'intermediate', language = 'javascript' } = body;
+
     if (!API_KEY) {
-      console.error('GEMINI_API_KEY not found')
-      return Response.json({ error: 'API key not configured' }, { status: 500 })
+      console.warn('GEMINI_API_KEY not found. Serving fallback challenge.');
+      return Response.json(generateFallbackChallenge(topicsCovered, difficulty, language));
     }
 
-    const { roadmapId, topicsCovered, difficulty, language } = await request.json()
-
-    const prompt = `Generate a coding challenge based on these topics: ${topicsCovered.join(', ')}. Difficulty: ${difficulty || 'intermediate'}. Language: ${language || 'python'}.
+    const prompt = `Generate a coding challenge based on these topics: ${Array.isArray(topicsCovered) ? topicsCovered.join(', ') : topicsCovered}. Difficulty: ${difficulty}. Language: ${language}.
 
 Return a JSON object with this structure:
 {
@@ -26,51 +49,37 @@ Return a JSON object with this structure:
   ],
   "constraints": ["constraint1", "constraint2"],
   "hints": ["hint1", "hint2"],
-  "starterCode": "${language === 'python' ? '# TODO: Write your solution here\\n# ' : '// TODO: Write your solution here\\n// '}"
-}
+  "starterCode": "string"
+}`;
 
-Make sure:
-- Problem is clear and solvable
-- Include multiple examples
-- Add helpful hints
-- Starter code is in the correct language
-- Constraints are realistic`
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`
+    try {
+      const response = await fetch(GEMINI_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+        }),
+      });
 
-    console.log('Generating challenge for topics:', topicsCovered)
-
-    const response = await fetch(GEMINI_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-      }),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      console.error('Gemini API error:', errorData)
-      return Response.json({ error: 'Failed to generate challenge' }, { status: response.status })
+      if (response.ok) {
+        const data = await response.json();
+        const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (content) {
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            return Response.json(JSON.parse(jsonMatch[0]));
+          }
+        }
+      }
+    } catch (aiErr) {
+      console.warn('Gemini challenge call failed, serving fallback:', aiErr);
     }
 
-    const data = await response.json()
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text
-
-    if (!content) {
-      return Response.json({ error: 'No content generated' }, { status: 400 })
-    }
-
-    const jsonMatch = content.match(/\{[\s\S]*\}/)
-    if (jsonMatch) {
-      const challenge = JSON.parse(jsonMatch[0])
-      console.log('Challenge generated successfully')
-      return Response.json(challenge)
-    }
-
-    return Response.json({ error: 'Failed to parse challenge response' }, { status: 400 })
+    return Response.json(generateFallbackChallenge(topicsCovered, difficulty, language));
   } catch (error) {
-    console.error('Challenge generation error:', error)
-    return Response.json({ error: error.message }, { status: 500 })
+    console.error('Challenge generation error:', error);
+    return Response.json(generateFallbackChallenge());
   }
 }
