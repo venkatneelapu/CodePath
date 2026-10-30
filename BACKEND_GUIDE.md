@@ -317,3 +317,4 @@ curl -X POST http://localhost:5000/api/gemini/mentor \
 ```
 
 A Postman collection is also available at `Backend/docs/codepath-api.postman_collection.json`.
+

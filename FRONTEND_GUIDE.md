@@ -186,3 +186,4 @@ async rewrites() {
 ```
 
 This prevents CORS issues and allows the frontend to call `/api/auth/login`, `/api/gemini/mentor`, etc., via relative paths.
+
