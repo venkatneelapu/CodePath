@@ -167,24 +167,22 @@ Install all project dependencies from the root directory with a single command:
 npm install
 ```
 
-### 3. Setup Your Environment File
+### 3. Setup Your Environment File (Pre-Configured!)
 
-Copy the provided `.env.example` template to `.env` in the root folder:
+The repository includes a **ready-to-run, pre-configured** `.env.example` file with working default values, including the Gemini AI API keys, local MongoDB connection, and session secrets!
 
-**On macOS / Linux:**
-```bash
-cp .env.example .env
-```
+- **Automatic (Easiest)**: When you run `npm run dev` in Step 5, CodePath automatically creates `.env` from `.env.example` if it doesn't already exist!
+- **Manual (Optional)**: If you prefer to copy it manually:
+  - **macOS / Linux:**
+    ```bash
+    cp .env.example .env
+    ```
+  - **Windows (PowerShell or Command Prompt):**
+    ```powershell
+    copy .env.example .env
+    ```
 
-**On Windows (PowerShell or Command Prompt):**
-```powershell
-copy .env.example .env
-```
-
-Open `.env` in your code editor and add your **Gemini API Key**:
-```env
-GEMINI_API_KEY=your_actual_gemini_api_key_here
-```
+*(Optional)*: If you want to use your own custom Gemini API key or MongoDB Atlas Cloud URI, you can open `.env` and change them anytime.
 
 ### 4. Initialize Database (Optional but Recommended)
 
@@ -210,11 +208,11 @@ That's it!
 
 ## ⚙️ Environment Configuration (Single `.env`)
 
-CodePath uses a **Single `.env` Architecture**. You only ever need to create and maintain **one `.env` file in the root directory**.
+CodePath uses a **Single `.env` Architecture**. You only ever need to maintain **one `.env` file in the root directory**.
 
 When you run `npm run dev`, `npm run build`, or `npm start`, the built-in runner automatically synchronizes your settings to `Frontend/.env.local` and `Backend/.env.local`.
 
-### Master `.env` Reference:
+### Master `.env` Reference (Pre-Configured in `.env.example`):
 
 ```env
 # ==============================================================================
@@ -224,20 +222,25 @@ When you run `npm run dev`, `npm run build`, or `npm start`, the built-in runner
 # 1. MongoDB Connection
 # Local MongoDB:
 MONGODB_URI=mongodb://localhost:27017/codepath
-# Cloud MongoDB Atlas:
+# Cloud MongoDB Atlas (Optional):
 # MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/codepath?retryWrites=true&w=majority
 
-# 2. Google Gemini AI API Key
-# Get a free key at: https://aistudio.google.com/app/apikey
-GEMINI_API_KEY=your_gemini_api_key_here
-NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
+# 2. Google Gemini AI API Configuration
+# Pre-configured with working key for instant roadmaps and mentor chat:
+GEMINI_API_KEY=AIzaSyAeq7ppqjGI5h7Hvx_eJCfPGKHFczVCmvc
+NEXT_PUBLIC_GEMINI_API_KEY=AIzaSyAeq7ppqjGI5h7Hvx_eJCfPGKHFczVCmvc
 
 # 3. Application URLs & Ports
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 PORT=3000
 BACKEND_PORT=5000
 
-# 4. Node Environment
+# 4. Authentication & Security
+SESSION_SECRET=codepath_super_secure_session_secret_key_2026_xyz987654321
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW_MS=900000
+
+# 5. Node Environment
 NODE_ENV=development
 ```
 
