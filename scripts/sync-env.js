@@ -3,7 +3,6 @@ const path = require('path');
 
 const rootDir = path.resolve(__dirname, '..');
 const rootEnvPath = path.join(rootDir, '.env');
-const exampleEnvPath = path.join(rootDir, '.env.example');
 const frontendEnvPath = path.join(rootDir, 'Frontend', '.env.local');
 const backendEnvPath = path.join(rootDir, 'Backend', '.env.local');
 
@@ -30,28 +29,21 @@ function parseEnv(content) {
 }
 
 /**
- * Format an object of key-value pairs back into .env format
+ * Load the single root .env directly into process.env
+ * Keeps only ONE .env file in the entire repository.
  */
-function formatEnv(envObj) {
-  let output = '# Auto-synced from root .env\n# DO NOT EDIT DIRECTLY - edit the root .env instead\n\n';
-  for (const [key, value] of Object.entries(envObj)) {
-    output += `${key}=${value}\n`;
+function loadSingleEnv() {
+  // Ensure any leftover subfolder env files are deleted
+  if (fs.existsSync(frontendEnvPath)) {
+    try { fs.unlinkSync(frontendEnvPath); } catch (e) {}
   }
-  return output;
-}
+  if (fs.existsSync(backendEnvPath)) {
+    try { fs.unlinkSync(backendEnvPath); } catch (e) {}
+  }
 
-/**
- * Synchronize the single root .env to Frontend and Backend
- */
-function syncEnv() {
   if (!fs.existsSync(rootEnvPath)) {
-    if (fs.existsSync(exampleEnvPath)) {
-      console.log('ℹ️  No root .env found. Automatically creating .env from .env.example...');
-      fs.copyFileSync(exampleEnvPath, rootEnvPath);
-    } else {
-      console.warn('⚠️  Warning: Neither .env nor .env.example was found in root.');
-      return {};
-    }
+    console.warn('⚠️  Warning: Root .env file not found.');
+    return {};
   }
 
   const rootContent = fs.readFileSync(rootEnvPath, 'utf8');
@@ -64,7 +56,6 @@ function syncEnv() {
     envObj.NEXT_PUBLIC_GEMINI_API_KEY = geminiKey;
   }
 
-  // Ensure default ports and URL
   if (!envObj.NEXT_PUBLIC_APP_URL) {
     envObj.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
   }
@@ -72,31 +63,17 @@ function syncEnv() {
     envObj.MONGODB_URI = 'mongodb://localhost:27017/codepath';
   }
 
-  // Inject into current process.env
+  // Inject into process.env
   for (const [key, val] of Object.entries(envObj)) {
-    if (!process.env[key]) {
-      process.env[key] = val;
-    }
-  }
-
-  const syncedContent = formatEnv(envObj);
-
-  // Ensure directories exist
-  const frontendDir = path.join(rootDir, 'Frontend');
-  const backendDir = path.join(rootDir, 'Backend');
-  if (fs.existsSync(frontendDir)) {
-    fs.writeFileSync(frontendEnvPath, syncedContent, 'utf8');
-  }
-  if (fs.existsSync(backendDir)) {
-    fs.writeFileSync(backendEnvPath, syncedContent, 'utf8');
+    process.env[key] = val;
   }
 
   return envObj;
 }
 
 if (require.main === module) {
-  syncEnv();
-  console.log('✅ Environment variables synchronized successfully.');
+  loadSingleEnv();
+  console.log('✅ Loaded single root .env successfully.');
 }
 
-module.exports = { syncEnv, parseEnv };
+module.exports = { syncEnv: loadSingleEnv, loadSingleEnv, parseEnv };

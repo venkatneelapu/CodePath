@@ -57,23 +57,9 @@ This installs all required dependencies for both Frontend (Next.js 15, React 19,
 
 ## 3. Environment Configuration (Single `.env`)
 
-CodePath uses an automated **Single `.env` Architecture**. You only maintain **one `.env` file in the root directory**. Subfolders (`Frontend/.env.local` and `Backend/.env.local`) are synchronized automatically.
+CodePath uses a **Single `.env` Architecture**. There is only **one `.env` file in the entire repository**, located in the root directory.
 
-### Step 3.1: Copy `.env.example`
-The repository includes a pre-configured `.env.example` with working defaults:
-
-- **macOS / Linux:**
-  ```bash
-  cp .env.example .env
-  ```
-- **Windows (PowerShell / Command Prompt):**
-  ```powershell
-  copy .env.example .env
-  ```
-*(Note: If you run `npm run dev` directly, CodePath automatically creates `.env` from `.env.example` if it doesn't already exist!)*
-
-### Step 3.2: Configure Environment Keys
-Open `.env` in your editor:
+The repository includes a ready-to-run `.env` file pre-configured with default working settings:
 ```env
 # MongoDB Connection (Local or Atlas)
 MONGODB_URI=mongodb://localhost:27017/codepath

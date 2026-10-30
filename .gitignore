@@ -33,15 +33,13 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
-.env
+# env files - only the single root .env is kept and tracked
 .env*.local
 .env.production
 .env.development
-!.env.example
-!.env.local.example
+!.env
 
-# also ignore env files inside apps
+# ignore any env files inside subfolders
 Frontend/.env*
 Backend/.env*
 

@@ -128,7 +128,7 @@ Ai Learning platform/
 │   ├── sync-env.js                    # Auto-syncs single root .env to services
 │   └── init-db.js                     # Initializes MongoDB collections & seeds courses
 │
-├── .env.example                       # Single master template for environment variables
+├── .env                               # Single root environment configuration
 ├── package.json                       # Root dependencies and unified scripts
 └── README.md                          # Project documentation
 ```
@@ -167,22 +167,14 @@ Install all project dependencies from the root directory with a single command:
 npm install
 ```
 
-### 3. Setup Your Environment File (Pre-Configured!)
+### 3. Environment Configuration (Single `.env` Included!)
 
-The repository includes a **ready-to-run, pre-configured** `.env.example` file with working default values, including the Gemini AI API keys, local MongoDB connection, and session secrets!
+The repository includes a single, pre-configured **`.env`** file located directly in the root directory. It already includes the working default settings:
+- Gemini AI API Key
+- MongoDB URI (`mongodb://localhost:27017/codepath`)
+- Session Secret & Application URL
 
-- **Automatic (Easiest)**: When you run `npm run dev` in Step 5, CodePath automatically creates `.env` from `.env.example` if it doesn't already exist!
-- **Manual (Optional)**: If you prefer to copy it manually:
-  - **macOS / Linux:**
-    ```bash
-    cp .env.example .env
-    ```
-  - **Windows (PowerShell or Command Prompt):**
-    ```powershell
-    copy .env.example .env
-    ```
-
-*(Optional)*: If you want to use your own custom Gemini API key or MongoDB Atlas Cloud URI, you can open `.env` and change them anytime.
+You do **not** need to copy or create any other `.env` files. Both Frontend and Backend read from this single root file.
 
 ### 4. Initialize Database (Optional but Recommended)
 
@@ -202,17 +194,15 @@ That's it!
 - 🌐 **Frontend Application**: [`http://localhost:3000`](http://localhost:3000)
 - ⚙️ **Backend API**: [`http://localhost:5000`](http://localhost:5000)
 
-> **Note:** You do **not** need to open multiple terminal tabs or manually run subfolders. `npm run dev` synchronizes your `.env`, boots both Frontend and Backend concurrently, prefixes their logs with `[Frontend]` and `[Backend]`, and handles clean shutdown when you press `Ctrl + C`.
+> **Note:** You do **not** need to open multiple terminal tabs or manually run subfolders. `npm run dev` boots both Frontend and Backend concurrently, prefixes their logs with `[Frontend]` and `[Backend]`, and handles clean shutdown when you press `Ctrl + C`.
 
 ---
 
 ## ⚙️ Environment Configuration (Single `.env`)
 
-CodePath uses a **Single `.env` Architecture**. You only ever need to maintain **one `.env` file in the root directory**.
+CodePath uses a **Single `.env` Architecture**. There is only **one `.env` file in the entire repository**, located in the root directory.
 
-When you run `npm run dev`, `npm run build`, or `npm start`, the built-in runner automatically synchronizes your settings to `Frontend/.env.local` and `Backend/.env.local`.
-
-### Master `.env` Reference (Pre-Configured in `.env.example`):
+### Single `.env` File Content:
 
 ```env
 # ==============================================================================
@@ -330,7 +320,7 @@ All API requests made to `http://localhost:3000/api/*` are automatically proxied
 ## ❓ Troubleshooting & FAQs
 
 ### 1. `GEMINI_API_KEY not configured`
-**Solution:** Ensure you copied `.env.example` to `.env` in the root folder and added your key from [Google AI Studio](https://aistudio.google.com/app/apikey). Restart with `npm run dev`.
+**Solution:** Ensure `GEMINI_API_KEY` is present in the root `.env` file. Restart with `npm run dev`.
 
 ### 2. `Failed to connect to MongoDB` / `MongooseServerSelectionError`
 **Solution:** Check that your local MongoDB server is running (`mongod`), or if using MongoDB Atlas, check that your IP address is whitelisted under **Network Access** in Atlas.
