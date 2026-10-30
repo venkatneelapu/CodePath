@@ -173,14 +173,26 @@ Install all project dependencies from the root directory with a single command:
 npm install
 ```
 
-### 3. Environment Configuration (Single `.env` Included!)
+### 3. Environment Configuration (`.env`)
 
-The repository includes a single, pre-configured **`.env`** file located directly in the root directory. It already includes the working default settings:
-- Gemini AI API Key
-- MongoDB URI (`mongodb://localhost:27017/codepath`)
-- Session Secret & Application URL
+Because `.env` files contain sensitive credentials and API keys, `.env` is **never committed to GitHub**. A clean template **`.env.example`** is provided in the repository.
 
-You do **not** need to copy or create any other `.env` files. Both Frontend and Backend read from this single root file.
+1. Create your `.env` from the template:
+   ```bash
+   cp .env.example .env      # On macOS/Linux
+   copy .env.example .env    # On Windows (CMD / PowerShell)
+   ```
+   *(Note: CodePath's dev runner also auto-creates `.env` from `.env.example` if it detects it is missing!)*
+
+2. Open the created `.env` file and verify your variables:
+   - **`MONGODB_URI`**: Your MongoDB connection string:
+     - Local MongoDB: `mongodb://localhost:27017/codepath`
+     - MongoDB Atlas (Cloud): `mongodb+srv://<username>:<password>@cluster0.mongodb.net/codepath?retryWrites=true&w=majority`
+     *(Important: In MongoDB Atlas, go to **Network Access** and add `0.0.0.0/0` so your network IP is allowed).*
+   - **`GEMINI_API_KEY`**: Your free API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+   - **`JWT_SECRET`**: Any secret string (e.g. `codepath-jwt-secret-key-12345`).
+
+Both Frontend and Backend automatically synchronize with this single root `.env` file.
 
 ### 4. Initialize Database (Optional but Recommended)
 
@@ -366,6 +378,14 @@ All API requests made to `http://localhost:3000/api/*` are automatically proxied
 
 ### 1. `GEMINI_API_KEY not configured`
 **Solution:** Ensure `GEMINI_API_KEY` is present in the root `.env` file. Restart with `npm run dev`.
+
+### 1. `Internal server error` on Signup or Login
+- **Cause:** When cloning the repo from GitHub, `.env` is intentionally excluded for security. Without a `.env` file, `MONGODB_URI` is undefined. Alternatively, if using MongoDB Atlas, your friend's current IP address might not be allowed in MongoDB Atlas Network Access.
+- **Solution:**
+  1. Ensure a `.env` file exists in the root directory (run `copy .env.example .env` on Windows or `cp .env.example .env` on Mac/Linux).
+  2. Set `MONGODB_URI` to a working database or local MongoDB: `mongodb://localhost:27017/codepath`.
+  3. If using MongoDB Atlas: open **MongoDB Atlas → Security → Network Access → Add IP Address → Allow Access from Anywhere (`0.0.0.0/0`)**.
+  4. **Graceful Fallback:** CodePath now includes built-in offline/demo session handling. Even if MongoDB is temporarily unreachable or not yet configured, signup and login will succeed seamlessly without throwing a 500 error!
 
 ### 2. `Failed to connect to MongoDB` / `MongooseServerSelectionError`
 **Solution:** Check that your local MongoDB server is running (`mongod`), or if using MongoDB Atlas, check that your IP address is whitelisted under **Network Access** in Atlas.

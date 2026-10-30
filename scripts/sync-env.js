@@ -42,8 +42,19 @@ function loadSingleEnv() {
   }
 
   if (!fs.existsSync(rootEnvPath)) {
-    console.warn('⚠️  Warning: Root .env file not found.');
-    return {};
+    const examplePath = path.join(rootDir, '.env.example');
+    if (fs.existsSync(examplePath)) {
+      console.log('ℹ️  Root .env file not found. Auto-generating .env from .env.example...');
+      try {
+        fs.copyFileSync(examplePath, rootEnvPath);
+        console.log('✅ Created root .env file from .env.example template.');
+      } catch (err) {
+        console.warn('⚠️  Could not auto-copy .env.example:', err.message);
+      }
+    } else {
+      console.warn('⚠️  Warning: Root .env file not found.');
+      return {};
+    }
   }
 
   const rootContent = fs.readFileSync(rootEnvPath, 'utf8');
