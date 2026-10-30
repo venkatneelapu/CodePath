@@ -74,10 +74,10 @@ export default function HomePage() {
 
           {/* Hero Headline */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-5xl leading-[1.1] mb-6">
-            Master Any Codebase{" "}
+            Master Coding Skills{" "}
             <br className="hidden sm:inline" />
             <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
-              With AI-Powered Precision
+              With Personalized AI Roadmaps
             </span>
           </h1>
 
