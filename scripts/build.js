@@ -12,7 +12,7 @@ const env = syncEnv();
 console.log('\n🔨 Building Backend API service...');
 const backendBuild = spawnSync(npxCmd, ['next', 'build'], {
   cwd: path.join(rootDir, 'Backend'),
-  env: { ...process.env, ...env },
+  env: { ...process.env, ...env, NODE_ENV: 'production' },
   stdio: 'inherit',
   shell: isWindows,
 });
@@ -25,7 +25,7 @@ if (backendBuild.status !== 0) {
 console.log('\n🔨 Building Frontend application...');
 const frontendBuild = spawnSync(npxCmd, ['next', 'build'], {
   cwd: path.join(rootDir, 'Frontend'),
-  env: { ...process.env, ...env },
+  env: { ...process.env, ...env, NODE_ENV: 'production' },
   stdio: 'inherit',
   shell: isWindows,
 });
