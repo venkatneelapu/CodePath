@@ -4,13 +4,18 @@
 
 ### *Master Code The Right Way — Personalized AI Roadmaps, Interactive Coding Playground, Real-Time AI Mentor & Gamified Learning*
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-codepath--tawny.vercel.app-00dfd8?style=for-the-badge&logo=vercel)](https://codepath-tawny.vercel.app/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-6.5-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas_Cloud-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/cloud/atlas)
 [![Gemini AI](https://img.shields.io/badge/Google_Gemini-2.5%2F3.0-orange?style=for-the-badge&logo=google)](https://aistudio.google.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+<br/>
+
+### 🌐 **Live Demo Website**: [https://codepath-tawny.vercel.app/](https://codepath-tawny.vercel.app/)
 
 </div>
 
@@ -210,10 +215,10 @@ CodePath uses a **Single `.env` Architecture**. There is only **one `.env` file 
 # ==============================================================================
 
 # 1. MongoDB Connection
-# Local MongoDB:
-MONGODB_URI=mongodb://localhost:27017/codepath
-# Cloud MongoDB Atlas (Optional):
-# MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/codepath?retryWrites=true&w=majority
+# MongoDB Atlas Cloud Database (Active & Seeded):
+MONGODB_URI=mongodb+srv://venkatnaidu:Venkat2005Pass@cluster0.bpjgtmw.mongodb.net/codepath?retryWrites=true&w=majority
+# Local fallback (if working offline):
+# MONGODB_URI=mongodb://localhost:27017/codepath
 
 # 2. Google Gemini AI API Configuration
 # Pre-configured with working key for instant roadmaps and mentor chat:

@@ -1,5 +1,8 @@
 # 🛠️ CodePath — Complete Setup & Deployment Guide
 
+> 🌐 **Live Website**: [https://codepath-tawny.vercel.app/](https://codepath-tawny.vercel.app/)  
+> ⚡ **Continuous Deployment Active**: Any commit pushed to the `main` branch on GitHub automatically rebuilds and deploys to Vercel in real-time.
+
 This guide provides comprehensive, step-by-step instructions to clone, configure, run, test, and deploy the **CodePath** AI-Powered Learning Platform on any operating system (**Windows, macOS, Linux**).
 
 ---
