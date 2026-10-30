@@ -78,7 +78,7 @@ export default function SignupPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Signup failed");
+        setError(data.message || data.error || (data.errors && data.errors[0]?.message) || "Signup failed");
         return;
       }
 

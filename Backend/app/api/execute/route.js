@@ -114,6 +114,29 @@ const executeTypeScript = async (code, tempDir) => {
       timeout: 15000,
     });
 
+    if (result.code === 0) {
+      return {
+        success: true,
+        output: result.stdout || "Code executed successfully",
+      };
+    }
+  } catch (error) {
+    // Proceed to node fallback
+  }
+
+  // Fallback to running with Node by stripping basic TypeScript syntax
+  const jsCode = code
+    .replace(/:\s*(string|number|boolean|void|any|unknown|never|object)\b/g, "")
+    .replace(/interface\s+\w+\s*\{[^}]*\}/g, "")
+    .replace(/type\s+\w+\s*=[^;]+;/g, "");
+  const jsPath = join(tempDir, "main.js");
+  await writeFile(jsPath, jsCode);
+
+  try {
+    const result = await execWithTimeout("node", [jsPath], {
+      cwd: tempDir,
+      timeout: 15000,
+    });
     if (result.code !== 0 && result.stderr) {
       return { success: false, output: result.stderr };
     }
@@ -121,30 +144,11 @@ const executeTypeScript = async (code, tempDir) => {
       success: true,
       output: result.stdout || "Code executed successfully",
     };
-  } catch (error) {
-    // Fallback to running as JavaScript
-    const jsCode = code.replace(/:\s*(string|number|boolean|void|any)\b/g, "");
-    const jsPath = join(tempDir, "main.js");
-    await writeFile(jsPath, jsCode);
-
-    try {
-      const result = await execWithTimeout("node", [jsPath], {
-        cwd: tempDir,
-        timeout: 15000,
-      });
-      if (result.code !== 0 && result.stderr) {
-        return { success: false, output: result.stderr };
-      }
-      return {
-        success: true,
-        output: result.stdout || "Code executed successfully",
-      };
-    } catch (e) {
-      return {
-        success: false,
-        output: `TypeScript execution failed.\nError: ${error.message}`,
-      };
-    }
+  } catch (e) {
+    return {
+      success: false,
+      output: `TypeScript execution failed.\nError: ${e.message}`,
+    };
   }
 };
 

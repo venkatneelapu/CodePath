@@ -32,7 +32,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Login failed");
+        setError(data.message || data.error || "Login failed");
         return;
       }
 

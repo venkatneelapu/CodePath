@@ -88,7 +88,7 @@ export default function Header() {
                 Features
               </Link>
               <Link
-                href="#"
+                href="/explore"
                 className="text-slate-300 hover:text-violet-300 text-sm font-medium transition-colors"
               >
                 Courses
