@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build Frontend",
-    "dev": "next dev Frontend",
-    "lint": "eslint .",
-    "start": "next start Frontend"
+    "dev": "node scripts/dev.js",
+    "dev:frontend": "next dev Frontend -p 3000",
+    "dev:backend": "next dev Backend -p 5000",
+    "build": "node scripts/build.js",
+    "start": "node scripts/start.js",
+    "env:sync": "node scripts/sync-env.js",
+    "db:init": "node scripts/init-db.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

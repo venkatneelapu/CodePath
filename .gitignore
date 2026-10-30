@@ -34,7 +34,12 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files
-.env*
+.env
+.env*.local
+.env.production
+.env.development
+!.env.example
+!.env.local.example
 
 # also ignore env files inside apps
 Frontend/.env*
