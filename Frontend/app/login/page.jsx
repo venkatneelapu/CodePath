@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LogIn, Mail, Lock, AlertCircle, CheckCircle2 } from "lucide-react";
+import { LogIn, Mail, Lock, AlertCircle, Eye, EyeOff, Code2, ArrowRight } from "lucide-react";
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -20,8 +21,6 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      console.log("Attempting login with email:", email);
-
       const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -36,76 +35,71 @@ export default function LoginPage() {
         return;
       }
 
-      console.log("[v0] Login successful");
       localStorage.setItem(
         "user",
         JSON.stringify({ ...data.data, id: data.data.user_id }),
       );
       router.push("/dashboard");
     } catch (err) {
-      console.error("[v0] Login error:", err);
-      setError("An error occurred. Please try again.");
+      console.error("Login error:", err);
+      setError("An unexpected network error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden flex items-center justify-center px-4">
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <div
-          className="absolute w-[500px] h-[500px] bg-gradient-to-br from-blue-600 via-cyan-500 to-transparent rounded-full blur-3xl opacity-20"
-          style={{ top: "10%", left: "-200px", animation: "blob 7s infinite" }}
-        ></div>
-        <div
-          className="absolute w-[500px] h-[500px] bg-gradient-to-br from-purple-600 via-blue-500 to-transparent rounded-full blur-3xl opacity-20"
-          style={{
-            bottom: "10%",
-            right: "-200px",
-            animation: "blob 9s infinite 2s",
-          }}
-        ></div>
+    <div className="relative min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center px-4 overflow-hidden">
+      {/* Background Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.25),rgba(255,255,255,0))]" />
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/15 rounded-full blur-[100px]" />
+        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/15 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px]" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 w-full max-w-md">
-        {/* Header */}
+      <div className="relative z-10 w-full max-w-md my-8">
+        {/* Header Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full mb-4 shadow-lg shadow-cyan-500/50">
-            <LogIn size={32} className="text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-gray-400">Sign in to your LearnPath account</p>
+          <Link href="/" className="inline-flex items-center gap-2.5 mb-5 group">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 shadow-md shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all">
+              <Code2 size={24} className="text-white" />
+            </div>
+            <span className="text-2xl font-extrabold bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent tracking-tight">
+              CodePath
+            </span>
+          </Link>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Welcome Back</h1>
+          <p className="text-sm text-slate-400 mt-1.5">Sign in to continue your learning journey</p>
         </div>
 
-        {/* Form Card */}
-        <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-700/50 rounded-2xl p-8 backdrop-blur-xl shadow-2xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Card Form */}
+        <div className="rounded-2xl border border-white/[0.08] bg-slate-900/60 p-7 sm:p-8 backdrop-blur-2xl shadow-2xl shadow-indigo-950/40">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Field */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-                <Mail size={16} className="text-cyan-400" />
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Mail size={14} className="text-indigo-400" />
                 Email Address
               </label>
-              <div className="relative">
-                <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 rounded-lg focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all"
-                />
-              </div>
+              <Input
+                type="email"
+                placeholder="developer@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="bg-slate-950/60 border border-white/[0.1] text-white placeholder:text-slate-500 rounded-xl h-11 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition-all"
+              />
             </div>
 
             {/* Password Field */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-300 flex items-center gap-2">
-                <Lock size={16} className="text-cyan-400" />
-                Password
-              </label>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Lock size={14} className="text-indigo-400" />
+                  Password
+                </label>
+              </div>
               <div className="relative">
                 <Input
                   type={showPassword ? "text" : "password"}
@@ -113,36 +107,24 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-gray-800/50 border border-gray-700/50 text-white placeholder-gray-500 rounded-lg focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all pr-10"
+                  className="bg-slate-950/60 border border-white/[0.1] text-white placeholder:text-slate-500 rounded-xl h-11 focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition-all pr-11"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            {/* Forgot Password Link */}
-            <div className="flex justify-end">
-              <Link
-                href="#"
-                className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
-              >
-                Forgot password?
-              </Link>
-            </div>
-
-            {/* Error Message */}
+            {/* Error Banner */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 flex items-start gap-3">
-                <AlertCircle
-                  size={20}
-                  className="text-red-400 flex-shrink-0 mt-0.5"
-                />
-                <p className="text-red-300 text-sm">{error}</p>
+              <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-rose-300 animate-in fade-in duration-200">
+                <AlertCircle size={16} className="text-rose-400 shrink-0 mt-0.5" />
+                <span className="leading-relaxed font-medium">{error}</span>
               </div>
             )}
 
@@ -150,55 +132,29 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-cyan-500/30 disabled:opacity-50"
+              className="w-full h-11 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white font-semibold shadow-lg shadow-indigo-500/25 transition-all border-0 text-sm"
             >
               {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Signing in...
-                </span>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  <span>Signing In...</span>
+                </div>
               ) : (
-                <span className="flex items-center justify-center gap-2">
-                  <LogIn size={18} />
-                  Sign In
-                </span>
+                <div className="flex items-center justify-center gap-2">
+                  <span>Sign In</span>
+                  <ArrowRight size={15} />
+                </div>
               )}
             </Button>
           </form>
 
-          {/* Divider */}
-          <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700/50"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-800 text-gray-400">
-                Don't have an account?
-              </span>
-            </div>
+          {/* Footer Card */}
+          <div className="mt-6 pt-5 border-t border-white/[0.08] text-center text-xs text-slate-400">
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
+              Sign up free
+            </Link>
           </div>
-
-          {/* Sign Up Link */}
-          <Link href="/signup">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full border-gray-700/50 text-gray-300 hover:bg-gray-700/50 hover:text-white transition-all py-3 rounded-lg font-semibold"
-            >
-              Create Account
-            </Button>
-          </Link>
-        </div>
-
-        {/* Demo Credentials */}
-        <div className="mt-6 bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-          <p className="text-blue-300 text-xs font-semibold mb-2 flex items-center gap-1">
-            <CheckCircle2 size={14} />
-            Demo Credentials Available
-          </p>
-          <p className="text-blue-300/80 text-xs">
-            Test the platform with demo credentials provided on signup
-          </p>
         </div>
       </div>
     </div>
