@@ -33,13 +33,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files - only the single root .env is kept and tracked
+# env files - never commit secrets to git
+.env
 .env*.local
 .env.production
 .env.development
-!.env
-
-# ignore any env files inside subfolders
 Frontend/.env*
 Backend/.env*
 
