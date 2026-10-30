@@ -3,7 +3,7 @@ const API_KEY = process.env.GEMINI_API_KEY
 export async function POST(request) {
   try {
     if (!API_KEY) {
-      console.error('[v0] GEMINI_API_KEY not found')
+      console.error('GEMINI_API_KEY not found')
       return Response.json({ error: 'API key not configured' }, { status: 500 })
     }
 
@@ -36,9 +36,9 @@ Make sure:
 - Starter code is in the correct language
 - Constraints are realistic`
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`
 
-    console.log('[v0] Generating challenge for topics:', topicsCovered)
+    console.log('Generating challenge for topics:', topicsCovered)
 
     const response = await fetch(GEMINI_API_URL, {
       method: 'POST',
@@ -50,7 +50,7 @@ Make sure:
 
     if (!response.ok) {
       const errorData = await response.json()
-      console.error('[v0] Gemini API error:', errorData)
+      console.error('Gemini API error:', errorData)
       return Response.json({ error: 'Failed to generate challenge' }, { status: response.status })
     }
 
@@ -64,13 +64,13 @@ Make sure:
     const jsonMatch = content.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
       const challenge = JSON.parse(jsonMatch[0])
-      console.log('[v0] Challenge generated successfully')
+      console.log('Challenge generated successfully')
       return Response.json(challenge)
     }
 
     return Response.json({ error: 'Failed to parse challenge response' }, { status: 400 })
   } catch (error) {
-    console.error('[v0] Challenge generation error:', error)
+    console.error('Challenge generation error:', error)
     return Response.json({ error: error.message }, { status: 500 })
   }
 }

@@ -3,7 +3,7 @@ const API_KEY = process.env.GEMINI_API_KEY
 export async function POST(request) {
   try {
     if (!API_KEY) {
-      console.error('[v0] GEMINI_API_KEY not found')
+      console.error('GEMINI_API_KEY not found')
       return Response.json({ error: 'API key not configured' }, { status: 500 })
     }
 
@@ -23,7 +23,7 @@ export async function POST(request) {
 
     // For API requests, reduce to max 5 days to avoid token limits and ensure valid JSON
     const daysToGenerate = Math.min(totalDays, 5)
-    console.log('[v0] Requested days:', totalDays, 'Generating:', daysToGenerate)
+    console.log('Requested days:', totalDays, 'Generating:', daysToGenerate)
 
     const prompt = `Generate a ${daysToGenerate}-day learning roadmap for ${topic} at ${level} level.
 
@@ -42,9 +42,9 @@ Example structure (MODIFY THIS FOR THE ACTUAL CONTENT):
 
 Generate valid JSON for ${daysToGenerate} days of ${topic} at ${level} level.`
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`
 
-    console.log('[v0] Calling Gemini API for day-wise roadmap generation...')
+    console.log('Calling Gemini API for day-wise roadmap generation...')
     const response = await fetch(GEMINI_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -53,15 +53,15 @@ Generate valid JSON for ${daysToGenerate} days of ${topic} at ${level} level.`
       }),
     })
 
-    console.log('[v0] Gemini response status:', response.status)
+    console.log('Gemini response status:', response.status)
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      console.error('[v0] Gemini API error status:', response.status, 'data:', errorData)
+      console.error('Gemini API error status:', response.status, 'data:', errorData)
       
       // Handle API quota exceeded (429) - use fallback roadmap
       if (response.status === 429) {
-        console.warn('[v0] API quota exceeded (429). Using fallback roadmap.')
+        console.warn('API quota exceeded (429). Using fallback roadmap.')
         const fallbackRoadmap = generateFallbackRoadmap(topic, totalDays, level)
         return Response.json({
           ...fallbackRoadmap,
@@ -71,7 +71,7 @@ Generate valid JSON for ${daysToGenerate} days of ${topic} at ${level} level.`
       }
       
       // For other errors, also try fallback
-      console.log('[v0] API error. Attempting fallback roadmap.')
+      console.log('API error. Attempting fallback roadmap.')
       const fallbackRoadmap = generateFallbackRoadmap(topic, totalDays, level)
       return Response.json(fallbackRoadmap)
     }
@@ -80,70 +80,70 @@ Generate valid JSON for ${daysToGenerate} days of ${topic} at ${level} level.`
     const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text
 
     if (!responseText) {
-      console.error('[v0] No response text from Gemini')
+      console.error('No response text from Gemini')
       return Response.json(
         { error: 'No response from AI service' },
         { status: 500 }
       )
     }
 
-    console.log('[v0] Raw response length:', responseText.length)
-    console.log('[v0] Response starts with:', responseText.substring(0, 100))
-    console.log('[v0] Response ends with:', responseText.substring(Math.max(0, responseText.length - 100)))
+    console.log('Raw response length:', responseText.length)
+    console.log('Response starts with:', responseText.substring(0, 100))
+    console.log('Response ends with:', responseText.substring(Math.max(0, responseText.length - 100)))
 
     // Extract JSON from response
     let jsonText
     try {
       jsonText = extractJSON(responseText)
     } catch (extractError) {
-      console.error('[v0] Error in extractJSON:', extractError?.message)
-      console.log('[v0] Using fallback due to extraction error')
+      console.error('Error in extractJSON:', extractError?.message)
+      console.log('Using fallback due to extraction error')
       const fallbackRoadmap = generateFallbackRoadmap(topic, totalDays, level)
       return Response.json(fallbackRoadmap)
     }
 
     if (!jsonText) {
-      console.error('[v0] Could not find valid JSON in response')
-      console.error('[v0] Full response text:', responseText.substring(0, 500))
-      console.log('[v0] Using fallback roadmap generation due to JSON extraction failure')
+      console.error('Could not find valid JSON in response')
+      console.error('Full response text:', responseText.substring(0, 500))
+      console.log('Using fallback roadmap generation due to JSON extraction failure')
       const fallbackRoadmap = generateFallbackRoadmap(topic, totalDays, level)
       return Response.json(fallbackRoadmap)
     }
 
-    console.log('[v0] Extracted JSON text length:', jsonText.length)
-    console.log('[v0] JSON starts with:', jsonText.substring(0, 100))
-    console.log('[v0] JSON ends with:', jsonText.substring(Math.max(0, jsonText.length - 100)))
+    console.log('Extracted JSON text length:', jsonText.length)
+    console.log('JSON starts with:', jsonText.substring(0, 100))
+    console.log('JSON ends with:', jsonText.substring(Math.max(0, jsonText.length - 100)))
 
     let roadmapData
     try {
       roadmapData = JSON.parse(jsonText)
-      console.log('[v0] Successfully parsed JSON with', roadmapData.roadmap?.length, 'days')
+      console.log('Successfully parsed JSON with', roadmapData.roadmap?.length, 'days')
     } catch (parseError) {
-      console.error('[v0] JSON parse error:', parseError.message)
-      console.error('[v0] Failed JSON text preview:', jsonText.substring(0, 300))
-      console.log('[v0] Using fallback roadmap generation due to JSON parse failure')
+      console.error('JSON parse error:', parseError.message)
+      console.error('Failed JSON text preview:', jsonText.substring(0, 300))
+      console.log('Using fallback roadmap generation due to JSON parse failure')
       const fallbackRoadmap = generateFallbackRoadmap(topic, totalDays, level)
       return Response.json(fallbackRoadmap)
     }
 
-    console.log('[v0] Successfully generated roadmap with', roadmapData.roadmap?.length, 'days')
+    console.log('Successfully generated roadmap with', roadmapData.roadmap?.length, 'days')
     return Response.json(roadmapData)
   } catch (error) {
-    console.error('[v0] Error generating day-wise roadmap:', error?.message || error)
-    console.error('[v0] Error stack:', error?.stack)
-    console.error('[v0] Error type:', error?.constructor?.name)
+    console.error('Error generating day-wise roadmap:', error?.message || error)
+    console.error('Error stack:', error?.stack)
+    console.error('Error type:', error?.constructor?.name)
 
     // Fallback: Generate a basic roadmap structure with default values
     try {
-      console.log('[v0] Using fallback roadmap generation with defaults')
+      console.log('Using fallback roadmap generation with defaults')
       const defaultTopic = 'Programming'
       const defaultTotalDays = 30
       const defaultLevel = 'Intermediate'
       const fallbackRoadmap = generateFallbackRoadmap(defaultTopic, defaultTotalDays, defaultLevel)
-      console.log('[v0] Fallback roadmap generated successfully with', fallbackRoadmap.roadmap?.length, 'days')
+      console.log('Fallback roadmap generated successfully with', fallbackRoadmap.roadmap?.length, 'days')
       return Response.json(fallbackRoadmap)
     } catch (fallbackError) {
-      console.error('[v0] Fallback generation also failed:', fallbackError?.message)
+      console.error('Fallback generation also failed:', fallbackError?.message)
       // Return minimal valid roadmap
       return Response.json({ roadmap: [] }, { status: 500 })
     }
@@ -152,7 +152,7 @@ Generate valid JSON for ${daysToGenerate} days of ${topic} at ${level} level.`
 
 function extractJSON(text) {
   if (!text) {
-    console.log('[v0] No text provided to extractJSON')
+    console.log('No text provided to extractJSON')
     return null
   }
 
@@ -174,7 +174,7 @@ function extractJSON(text) {
   // Remove any leading text before {
   const startIdx = cleaned.indexOf('{')
   if (startIdx === -1) {
-    console.log('[v0] No opening brace found')
+    console.log('No opening brace found')
     return null
   }
 
@@ -220,12 +220,12 @@ function extractJSON(text) {
   }
 
   if (endIdx === -1) {
-    console.log('[v0] No matching closing brace found. Final count:', braceCount)
+    console.log('No matching closing brace found. Final count:', braceCount)
     return null
   }
 
   const result = cleaned.substring(0, endIdx)
-  console.log('[v0] Extracted JSON, length:', result.length)
+  console.log('Extracted JSON, length:', result.length)
   
   return result
 }
@@ -237,7 +237,7 @@ function generateFallbackRoadmap(topic, totalDays, level) {
   
   // Ensure totalDays is a valid number
   const daysToGenerate = Math.min(totalDays || 30, 30)
-  console.log('[v0] Generating fallback roadmap with', daysToGenerate, 'days for', topic)
+  console.log('Generating fallback roadmap with', daysToGenerate, 'days for', topic)
 
   for (let day = 1; day <= daysToGenerate; day++) {
     const difficulty = difficulties[Math.floor((day - 1) / 10) % difficulties.length]

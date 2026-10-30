@@ -64,6 +64,12 @@ Ai Learning/
 │   ├── FOLDER_STRUCTURE.md            # This file
 │   └── ...other documentation
 │
+├── Reports/                           # Project reports, presentations & research papers
+│   ├── CapstoneFinalReport.docx / .pdf
+│   ├── capstoneplagreport.pdf
+│   ├── Presentations (.pptx)
+│   └── Patent & conference documents
+│
 └── node_modules/                      # Dependencies
 ```
 

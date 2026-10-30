@@ -4,12 +4,12 @@ const API_KEY = process.env.GEMINI_API_KEY;
 export async function POST(request) {
   try {
     if (!API_KEY) {
-      console.error('[v0] GEMINI_API_KEY not found in environment variables');
+      console.error('GEMINI_API_KEY not found in environment variables');
       return Response.json({ reply: 'API key not configured. Please set up your Gemini API key.' }, { status: 200 });
     }
 
     const { message, context } = await request.json();
-    console.log('[v0] Mentor request - message:', message, 'context:', context);
+    console.log('Mentor request - message:', message, 'context:', context);
 
     const prompt = `You are a helpful coding mentor. Keep responses SHORT and SIMPLE. Like talking to a friend.
 
@@ -28,10 +28,10 @@ Student Question: "${message}"
 
 REMEMBER: Short, simple, and helpful - like a real mentor!`;
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
 
-    console.log('[v0] Calling Gemini API...');
-    console.log('[v0] API URL:', GEMINI_API_URL.replace(API_KEY, '***'));
+    console.log('Calling Gemini API...');
+    console.log('API URL:', GEMINI_API_URL.replace(API_KEY, '***'));
     
     let response;
     try {
@@ -50,7 +50,7 @@ REMEMBER: Short, simple, and helpful - like a real mentor!`;
       
       clearTimeout(timeoutId);
     } catch (fetchError) {
-      console.error('[v0] Fetch error calling Gemini API:', fetchError.message);
+      console.error('Fetch error calling Gemini API:', fetchError.message);
       
       if (fetchError.name === 'AbortError') {
         return Response.json({ 
@@ -63,27 +63,27 @@ REMEMBER: Short, simple, and helpful - like a real mentor!`;
       }, { status: 200 });
     }
 
-    console.log('[v0] Gemini response status:', response.status);
+    console.log('Gemini response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('[v0] Gemini API error:', errorData);
+      console.error('Gemini API error:', errorData);
       return Response.json({ reply: 'I\'m having trouble accessing the AI service. But I can still help! Tell me more about your question.' }, { status: 200 });
     }
 
     const data = await response.json();
-    console.log('[v0] Gemini data:', data);
+    console.log('Gemini data:', data);
     
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!reply) {
-      console.warn('[v0] No reply in Gemini response');
+      console.warn('No reply in Gemini response');
       return Response.json({ reply: 'I received your question but couldn\'t generate a response. Please try again or rephrase your question.' }, { status: 200 });
     }
 
     return Response.json({ reply });
   } catch (error) {
-    console.error('[v0] Mentor API error:', error);
+    console.error('Mentor API error:', error);
     return Response.json({ reply: 'An error occurred. Please try again later.' }, { status: 200 });
   }
 }

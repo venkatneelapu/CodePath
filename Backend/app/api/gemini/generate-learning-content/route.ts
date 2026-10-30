@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
 Include:
 - Learning objectives
-- Step-by-step explanation  
+- Step-by-step explanation
 - Code examples
 - Practice exercises
 - Resources/links
@@ -30,7 +30,7 @@ Return ONLY valid JSON:
   "resources": ["links or books"]
 }`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -49,9 +49,9 @@ Return ONLY valid JSON:
 
   } catch (error) {
     console.error('Content generation error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Failed to generate content',
-      details: error.message 
+      details: error.message
     }, { status: 500 });
   }
 }

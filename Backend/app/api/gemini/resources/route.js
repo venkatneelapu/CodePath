@@ -4,7 +4,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 export async function POST(request) {
   try {
     if (!API_KEY) {
-      console.error('[v0] GEMINI_API_KEY not found');
+      console.error('GEMINI_API_KEY not found');
       return Response.json({ error: 'API key not configured' }, { status: 500 });
     }
 
@@ -23,7 +23,7 @@ Return a JSON array like this:
   }
 ]`;
 
-    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
 
     const response = await fetch(GEMINI_API_URL, {
       method: "POST",
@@ -35,7 +35,7 @@ Return a JSON array like this:
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('[v0] Gemini API error:', errorData);
+      console.error('Gemini API error:', errorData);
       return Response.json([], { status: 200 });
     }
 
@@ -52,7 +52,7 @@ Return a JSON array like this:
     }
     return Response.json([], { status: 200 });
   } catch (error) {
-    console.error('[v0] Resources error:', error);
+    console.error('Resources error:', error);
     return Response.json([], { status: 200 });
   }
 }
