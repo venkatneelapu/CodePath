@@ -112,6 +112,16 @@ export const roadmapStorage = {
     }
     return roadmap;
   },
+  deleteRoadmap: (roadmapId) => {
+    const user = authStorage.getUser();
+    if (!user) return;
+
+    const roadmaps = JSON.parse(
+      localStorage.getItem(`roadmaps_${user.id}`) || "[]",
+    );
+    const filtered = roadmaps.filter((r) => r.id !== roadmapId && r._id !== roadmapId);
+    localStorage.setItem(`roadmaps_${user.id}`, JSON.stringify(filtered));
+  },
 };
 
 export const streakStorage = {

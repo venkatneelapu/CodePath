@@ -10,6 +10,73 @@ import { authStorage, roadmapStorage } from '@/lib/auth'
 import { BookOpen, Code2, CheckCircle2, ArrowRight, Clock, Zap, Calendar } from 'lucide-react'
 import ContentViewer from '@/components/learning/content-viewer'
 
+function generateModuleQuiz(topic, day, concepts = [], moduleTitle = '') {
+  const c1 = concepts[0] || 'Foundations & Architecture';
+  const c2 = concepts[1] || 'Hands-on Implementation';
+  const c3 = concepts[2] || 'Best Practices & Optimization';
+  const title = moduleTitle || `Day ${day}: ${topic}`;
+
+  return {
+    questions: [
+      {
+        id: 1,
+        question: `In ${title}, what is the fundamental purpose of ${c1}?`,
+        options: [
+          `a) Defines foundational structures, logic, and component state`,
+          `b) Applies CSS transitions to animations`,
+          `c) Overrides local network routing table`,
+          `d) Compiles system kernel modules`
+        ],
+        correctAnswer: 'a'
+      },
+      {
+        id: 2,
+        question: `When implementing ${c2}, which pattern ensures maintainability?`,
+        options: [
+          `a) Hardcoding values and bypassing error boundaries`,
+          `b) Writing modular, readable, and testable functions`,
+          `c) Uncontrolled recursion without exit condition`,
+          `d) Storing secrets in plain client cookies`
+        ],
+        correctAnswer: 'b'
+      },
+      {
+        id: 3,
+        question: `How does adhering to ${c3} safeguard production applications?`,
+        options: [
+          `a) Prevents performance bottlenecks, leaks, and runtime errors`,
+          `b) Slows down execution cycles intentionally`,
+          `c) Disables strict linting rules`,
+          `d) Forces manual server restarts`
+        ],
+        correctAnswer: 'a'
+      },
+      {
+        id: 4,
+        question: `What is the most effective debugging method when troubleshooting ${title}?`,
+        options: [
+          `a) Guessing syntax randomly until it works`,
+          `b) Inspecting stack traces, checking inputs, and testing edge cases`,
+          `c) Deleting all test files`,
+          `d) Disconnecting database credentials`
+        ],
+        correctAnswer: 'b'
+      },
+      {
+        id: 5,
+        question: `What should you do after completing Day ${day}'s assignment?`,
+        options: [
+          `a) Test edge cases, refactor code, and review core concepts`,
+          `b) Skip all remaining curriculum modules`,
+          `c) Ignore runtime warnings`,
+          `d) Hardcode the sample answers`
+        ],
+        correctAnswer: 'a'
+      }
+    ]
+  };
+}
+
 export default function RoadmapDetailsPage() {
   const router = useRouter()
   const params = useParams()
@@ -54,16 +121,9 @@ export default function RoadmapDetailsPage() {
             difficulty: 'easy',
             language: 'python'
           },
-          quiz: m.quiz || {
-            questions: [
-              {
-                id: 1,
-                question: 'What is the main concept discussed in this module?',
-                options: ['a) Correct Concept', 'b) Wrong Answer', 'c) Another Wrong Answer', 'd) None of the above'],
-                correctAnswer: 'a'
-              }
-            ]
-          }
+          quiz: (m.quiz && m.quiz.questions && m.quiz.questions.length >= 2)
+            ? m.quiz
+            : generateModuleQuiz(data.topic || 'Coding', idx + 1, m.topics || m.concepts, m.title),
         }))
 
         setRoadmap({ ...data, days: formattedDays, progress: data.completed_count ? Math.round((data.completed_count / data.module_count) * 100) : 0 })
@@ -401,7 +461,16 @@ export default function RoadmapDetailsPage() {
                                   </p>
                                 </div>
                               </div>
-                              <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white mt-4">
+                              <Button
+                                onClick={() => {
+                                  const lang = currentDayData.codingAssignment?.language || 'python';
+                                  const title = currentDayData.codingAssignment?.title || currentDayData.title || `Day ${currentDayData.day} Assignment`;
+                                  const desc = currentDayData.codingAssignment?.description || 'Apply what you learned today.';
+                                  const starter = currentDayData.codingAssignment?.starterCode || `# Task: ${title}\n# Description: ${desc}\n\ndef solution():\n    # TODO: Write your solution here\n    print("Executing ${title} solution...")\n\nsolution()\n`;
+                                  router.push(`/playground?lang=${encodeURIComponent(lang)}&task=${encodeURIComponent(title)}&code=${encodeURIComponent(starter)}`);
+                                }}
+                                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white mt-4 font-semibold shadow-md shadow-purple-500/25 transition-all"
+                              >
                                 <Code2 size={18} className="mr-2" />
                                 Open Code Editor
                               </Button>
@@ -411,10 +480,10 @@ export default function RoadmapDetailsPage() {
                           {/* Quiz Button */}
                           <Button
                             onClick={() => setShowQuiz(true)}
-                            className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white py-6 text-lg font-bold"
+                            className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white py-5 text-base sm:text-lg font-bold shadow-md shadow-cyan-500/20"
                           >
                             <BookOpen size={20} className="mr-2" />
-                            Take Daily Quiz (15 Questions)
+                            Take Daily Quiz ({currentDayData.quiz?.questions?.length || 5} Questions)
                           </Button>
                         </div>
                       </>

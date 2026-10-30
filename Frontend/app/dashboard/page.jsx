@@ -20,7 +20,9 @@ import {
   Zap,
   Users,
   TrendingUp,
+  Trash2,
 } from "lucide-react";
+import { roadmapStorage } from "@/lib/auth";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -74,6 +76,29 @@ export default function DashboardPage() {
 
     loadDashboard();
   }, [router]);
+
+  const handleDeleteRoadmap = async (roadmapId, e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!confirm("Are you sure you want to delete this learning roadmap?")) {
+      return;
+    }
+
+    try {
+      await fetch(`/api/roadmaps/${roadmapId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      roadmapStorage.deleteRoadmap(roadmapId);
+      setRoadmaps((prev) => prev.filter((r) => (r._id || r.id) !== roadmapId));
+    } catch (err) {
+      console.error("Error deleting roadmap:", err);
+      roadmapStorage.deleteRoadmap(roadmapId);
+      setRoadmaps((prev) => prev.filter((r) => (r._id || r.id) !== roadmapId));
+    }
+  };
 
   if (loading)
     return (
@@ -455,20 +480,29 @@ export default function DashboardPage() {
                       <div className="p-6 space-y-4">
                         {/* Header */}
                         <div className="flex items-start justify-between">
-                          <div className="flex-1">
+                          <div className="flex-1 pr-2">
                             <h3 className="text-lg font-bold text-white mb-1">
                               {roadmap.title}
                             </h3>
-                            <p className="text-sm text-gray-400">
+                            <p className="text-sm text-gray-400 line-clamp-2">
                               {roadmap.description}
                             </p>
                           </div>
-                          {isCompleted && (
-                            <CheckCircle2
-                              size={24}
-                              className="text-emerald-400 flex-shrink-0 ml-2 animate-pulse"
-                            />
-                          )}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {isCompleted && (
+                              <CheckCircle2
+                                size={22}
+                                className="text-emerald-400 animate-pulse"
+                              />
+                            )}
+                            <button
+                              onClick={(e) => handleDeleteRoadmap(roadmap._id, e)}
+                              className="p-1.5 rounded-lg text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                              title="Delete Roadmap"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
                         </div>
 
                         {/* Progress Section */}
@@ -496,25 +530,33 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="grid grid-cols-3 gap-2 pt-2">
+                        <div className="grid grid-cols-4 gap-1.5 pt-2">
                           <Link href={`/roadmap/${roadmap._id}`}>
-                            <button className="w-full bg-gray-800/50 hover:bg-cyan-600/50 text-cyan-400 hover:text-white text-xs font-semibold py-2 px-2 rounded-lg transition-all duration-300">
+                            <button className="w-full bg-gray-800/50 hover:bg-cyan-600/50 text-cyan-400 hover:text-white text-xs font-semibold py-2 px-1 rounded-lg transition-all duration-300">
                               <BookOpen size={14} className="mx-auto mb-1" />
                               <span className="block text-xs">Details</span>
                             </button>
                           </Link>
                           <Link href={`/quiz/${roadmap._id}`}>
-                            <button className="w-full bg-gray-800/50 hover:bg-blue-600/50 text-blue-400 hover:text-white text-xs font-semibold py-2 px-2 rounded-lg transition-all duration-300">
+                            <button className="w-full bg-gray-800/50 hover:bg-blue-600/50 text-blue-400 hover:text-white text-xs font-semibold py-2 px-1 rounded-lg transition-all duration-300">
                               <Award size={14} className="mx-auto mb-1" />
                               <span className="block text-xs">Quiz</span>
                             </button>
                           </Link>
                           <Link href={`/challenge/${roadmap._id}`}>
-                            <button className="w-full bg-gray-800/50 hover:bg-purple-600/50 text-purple-400 hover:text-white text-xs font-semibold py-2 px-2 rounded-lg transition-all duration-300">
+                            <button className="w-full bg-gray-800/50 hover:bg-purple-600/50 text-purple-400 hover:text-white text-xs font-semibold py-2 px-1 rounded-lg transition-all duration-300">
                               <Code2 size={14} className="mx-auto mb-1" />
-                              <span className="block text-xs">Challenge</span>
+                              <span className="block text-xs">Task</span>
                             </button>
                           </Link>
+                          <button
+                            onClick={(e) => handleDeleteRoadmap(roadmap._id, e)}
+                            className="w-full bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-semibold py-2 px-1 rounded-lg transition-all duration-300 border border-rose-500/20 hover:border-transparent"
+                            title="Delete Roadmap"
+                          >
+                            <Trash2 size={14} className="mx-auto mb-1" />
+                            <span className="block text-xs">Delete</span>
+                          </button>
                         </div>
                       </div>
                     </div>
